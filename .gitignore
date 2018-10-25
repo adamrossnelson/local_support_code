@@ -1,6 +1,8 @@
 .ipynb_checkpoints
-.xlsx
-.xls
-.dta
-.csv
-.json
+*.xlsx
+*.xls
+*.dta
+*.csv
+*.json
+
+__pycache__
