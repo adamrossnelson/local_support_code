@@ -4,5 +4,3 @@
 *.dta
 *.csv
 *.json
-
-__pycache__
