@@ -5,3 +5,4 @@ __pycache__
 *.dta
 *.csv
 *.json
+.DS_store
