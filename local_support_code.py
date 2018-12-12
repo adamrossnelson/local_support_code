@@ -74,6 +74,21 @@ def write_log_file(write_list, dir='', descriptive_text=''):
                 for write_lines in write_log:
                     print(write_lines, file = logfile)
     logfile.close
+
+# This Function merges csv files into a single pandas dataframe.
+def combine_csv_files(path='.'):
+    import os
+    import pandas as pd
+    full_file_list = os.listdir(path)
+    csvs_file_list = []
+    for i in full_file_list:
+        if i[-4:] == '.csv':
+            csvs_file_list.append(i)
+    df = pd.read_csv(os.path.join(path, csvs_file_list.pop(0)))
+    for filename in csvs_file_list:
+        df = pd.concat([df, pd.read_csv(os.path.join(path, filename))])
+    return(df)
+    
     
 # Function for testing purposes.
 
