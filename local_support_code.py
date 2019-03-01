@@ -14,6 +14,7 @@ def clean_word(word, *, case='lower'):
         raise Exception('Argument (case) incorrectly specified. \
                         Default is "lower" Alternate options \
                         are "upper" and "asis".')
+
 # This funciton cleans a list of column names so that only letters
 # a-z and digits 0-9 will remain. Also removes spaces. Also makes
 # sure each column name is unique. Use to prepare pandas dataframe
@@ -48,6 +49,12 @@ def obj_to_string(df):
     return(df)
 
 
+# Define function that finds and replaces offensive characters.
+def fix_char_ct(bad_text):
+    ret_txt = ''
+    for item in bad_text:
+        ret_txt += item if len(item.encode(encoding='utf_8')) == 1 else ''
+    return(ret_txt)
 
 
 # Function that writes a list to a text file.
