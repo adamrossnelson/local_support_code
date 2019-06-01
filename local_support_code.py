@@ -39,7 +39,22 @@ def clean_cols(clst, *, case='lower'):
         return(newestcols)
     else:
         return(newcols)
- 
+
+
+# This function prepares Pandas dataframes for export to Stata.
+def prep_for_stata(df, log_out=True):
+   obj_cols = list(df.select_dtypes(include=['object']).columns)
+   if log_out:
+       print('Found {} object type columns. Including:'.format(len(obj_cols)))
+       print(obj_cols)
+   # Convert object data types to string.
+   df = obj_to_string(df)
+   # Remove special (unicode) characters.
+   for obj_col in obj_cols:
+       df[obj_col] = df[obj_col].apply(fix_char_ct)
+   return(df)
+
+
 # When a Pandas dataframe contains object data types, this function
 # quickly converts those to string. Use when exporting to formats that
 # do not accept object data types.
