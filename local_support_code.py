@@ -68,7 +68,7 @@ def obj_to_string(df):
 def get_strl(df, max_len=244):
     strl_list = []
     for obj_col in list(df.select_dtypes(include=['object']).columns):
-        if df[obj_col].map(lambda x: len(x)).map() > max_len:
+        if df[obj_col].map(lambda x: len(x)).max() > max_len:
             strl_list.append(obj_col)
     return(strl_list)
 
