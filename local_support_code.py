@@ -63,6 +63,14 @@ def obj_to_string(df):
         df[obj_col] = df[obj_col].astype(str)
     return(df)
 
+# This function gets a list of variables in a pandas dataframe that need
+# to be saved as Strl format in Stata.
+def get_strl(df, max_len=244):
+    strl_list = []
+    for obj_col in list(df.select_dtypes(include=['object']).columns):
+        if df[obj_col].map(lambda x: len(x)).map() > max_len:
+            strl_list.append(obj_col)
+    return(strl_list)
 
 # Define function that finds and replaces offensive characters.
 def fix_char_ct(bad_text):
