@@ -54,6 +54,17 @@ def prep_for_stata(df, log_out=True):
        df[obj_col] = df[obj_col].apply(fix_char_ct)
    return(df)
 
+def parallelize_dataframe(df, func, n_cores=4):
+    import pandas as pd 
+    from multiprocessing import  Pool
+    import numpy as np
+    df_split = np.array_split(df, n_cores)
+    pool = Pool(n_cores)
+    df = pd.concat(pool.map(func, df_split))
+    pool.close()
+    pool.join()
+    return df
+
 
 # When a Pandas dataframe contains object data types, this function
 # quickly converts those to string. Use when exporting to formats that
