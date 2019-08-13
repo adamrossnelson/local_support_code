@@ -40,45 +40,68 @@ def clean_cols(clst, *, case='lower'):
     else:
         return(newcols)
 
+# This function prepares Pandas dataframes for export to Stata.
+def prep_for_stata(df, log_out=False):
+    from tqdm import tqdm, tqdm_notebook
+    obj_cols = list(df.select_dtypes(include=['object']).columns)
+    if log_out:
+        print('Found {} object type columns. Including:'.format(len(obj_cols)))
+        print(obj_cols)
+    # Convert object data types to string.
+    df = obj_to_string(df)
+    # Remove special (unicode) characters.
+    for obj_col in tqdm(obj_cols, desc='Fix Char Ct'):
+        df[obj_col] = df[obj_col].apply(fix_char_ct)
+    return(df)
 
 # This function prepares Pandas dataframes for export to Stata.
-def prep_for_stata(df, log_out=True):
-   obj_cols = list(df.select_dtypes(include=['object']).columns)
-   if log_out:
-       print('Found {} object type columns. Including:'.format(len(obj_cols)))
-       print(obj_cols)
-   # Convert object data types to string.
-   df = obj_to_string(df)
-   # Remove special (unicode) characters.
-   for obj_col in obj_cols:
+def prep_for_stata2(df, log_out=False):
+    from tqdm import tqdm, tqdm_notebook
+    obj_cols = list(df.select_dtypes(include=['object']).columns)
+    pbar = tqdm(obj_cols)
+    if log_out:
+        print('Found {} object type columns. Including:'.format(len(obj_cols)))
+        print(obj_cols)
+    # Convert object data types to string.
+    df = obj_to_string2(df)
+    # Remove special (unicode) characters.
+    for obj_col in pbar:
+       pbar.set_description('Fixing Chars In Column :"{}"'.format(obj_col))
        df[obj_col] = df[obj_col].apply(fix_char_ct)
-   return(df)
-
-def parallelize_dataframe(df, func, n_cores=4):
-    import pandas as pd 
-    from multiprocessing import  Pool
-    import numpy as np
-    df_split = np.array_split(df, n_cores)
-    pool = Pool(n_cores)
-    df = pd.concat(pool.map(func, df_split))
-    pool.close()
-    pool.join()
-    return df
-
+    return(df)
 
 # When a Pandas dataframe contains object data types, this function
 # quickly converts those to string. Use when exporting to formats that
 # do not accept object data types.
 def obj_to_string(df):
-    for obj_col in list(df.select_dtypes(include=['object']).columns):
+    from tqdm import tqdm, tqdm_notebook
+    for obj_col in tqdm(list(df.select_dtypes(include=['object']).columns), desc='Obj To Text'):
+        df[obj_col] = df[obj_col].astype(str)
+    return(df)
+
+def obj_to_string2(df):
+    from tqdm import tqdm, tqdm_notebook
+    obj_cols = list(df.select_dtypes(include=['object']).columns)
+    pbar = tqdm(obj_cols)
+    for obj_col in pbar:
+        pbar.set_description('Convert Object Column  :"{}"'.format(obj_col))
         df[obj_col] = df[obj_col].astype(str)
     return(df)
 
 # This function gets a list of variables in a pandas dataframe that need
 # to be saved as Strl format in Stata.
-def get_strl(df, max_len=244):
+def get_strl_old(df, max_len=244):
     strl_list = []
     for obj_col in list(df.select_dtypes(include=['object']).columns):
+        if df[obj_col].map(lambda x: len(x)).max() > max_len:
+            strl_list.append(obj_col)
+    return(strl_list)
+
+def get_strl(df, max_len=244):
+    from tqdm import tqdm, tqdm_notebook
+    obj_cols = list(df.select_dtypes(include=['object']).columns)
+    strl_list = []
+    for obj_col in tqdm(obj_cols, desc='Get Strl List'):
         if df[obj_col].map(lambda x: len(x)).max() > max_len:
             strl_list.append(obj_col)
     return(strl_list)
@@ -90,6 +113,16 @@ def fix_char_ct(bad_text):
         ret_txt += item if len(item.encode(encoding='utf_8')) == 1 else ''
     return(ret_txt)
 
+def parallelize_dataframe(df, func, n_cores=4):
+    import pandas as pd 
+    from multiprocessing import  Pool
+    import numpy as np
+    df_split = np.array_split(df, n_cores)
+    pool = Pool(n_cores)
+    df = pd.concat(pool.map(func, df_split))
+    pool.close()
+    pool.join()
+    return df
 
 # Function that writes a list to a text file.
 # Useful when using a list to log events.
