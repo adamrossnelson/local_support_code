@@ -132,7 +132,7 @@ def combine_csv_files(path='.'):
 
 # Prints iterable more neatly.
 def neat_list(thelist, width=4):
-    for i in range(1,len(df.columns)):
+    for i in range(1,len(thelist)):
         if i%width > 0:
             print('"{}" '.format(thelist[i]), end='')
         elif i%width == 0:
