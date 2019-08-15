@@ -129,10 +129,16 @@ def combine_csv_files(path='.'):
     for filename in csvs_file_list:
         df = pd.concat([df, pd.read_csv(os.path.join(path, filename))])
     return(df)
-    
+
+# Prints iterable more neatly.
+def neat_list(thelist, width=4):
+    for i in range(1,len(df.columns)):
+        if i%width > 0:
+            print('"{}" '.format(thelist[i]), end='')
+        elif i%width == 0:
+            print('"{}" '.format(thelist[i]))
     
 # Function for testing purposes.
-
 def hello_world():
     print('Hello world')
 
