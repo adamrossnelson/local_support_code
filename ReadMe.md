@@ -7,6 +7,12 @@ environments.
 
 ## Setup / Installation
 
+Windows:
+
+See [Set the system path for Python Jupyter notebooks](https://www.peterbakke.com/data-analysis/set-system-path-python-jupyter-notebooks/)
+
+Mac or Linus:
+
 Clone this repository to local environment. Add the repository location to Jupyter's path. Discussion of Jupyter path 
 [here](https://stackoverflow.com/questions/34976803/sys-path-different-in-jupyter-and-python-how-to-import-own-modules-in-jupyter).
 
