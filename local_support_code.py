@@ -137,6 +137,15 @@ def neat_list(thelist, width=4):
             print('"{}" '.format(thelist[i]), end='')
         elif i%width == 0:
             print('"{}" '.format(thelist[i]))
+
+# Test if an item is in a list.
+# Inspired by Stata's inlist command.
+def inlist(list_to_test, item=''):
+    isinlist = False
+    for i in list_to_test:
+        if i == item:
+            isinlist = True
+    return(isinlist)            
     
 # Function for testing purposes.
 def hello_world():
