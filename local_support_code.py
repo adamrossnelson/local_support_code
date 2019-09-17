@@ -144,6 +144,8 @@ def combine_csv_files(path='.'):
 
 # Prints iterable more neatly.
 def neat_list(thelist, width=4):
+    if type(thelist) == dict:
+        thelist = [(k,v) for k,v in thelist.items()]
     for i in range(0,len(thelist)):
         if i%width > 0:
             print('"{}" '.format(thelist[i]), end='')
