@@ -5,6 +5,7 @@ def is_running_from_ipython():
 
 # A conditional print / display option
 def printmd(string, mkdn=True):
+    from IPython.display import Markdown
     if is_running_from_ipython() & mkdn:
         display(Markdown(string))
     else:
