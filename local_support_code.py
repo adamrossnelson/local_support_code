@@ -1,3 +1,16 @@
+# Test if running in notebook
+def is_running_from_ipython():
+    from IPython import get_ipython
+    return get_ipython() is not None     
+
+# A conditional print / display option
+def printmd(string, mkdn=True):
+    from IPython.display import Markdown
+    if is_running_from_ipython() & mkdn:
+        display(Markdown(string))
+    else:
+        print(string)
+
 # This function cleans a string so that only letters a-z and digits
 # 0-9 will remain. Also removes spaces. Use to prepare pandas 
 # dataframe columns for export in formats that do not accept special 
@@ -129,10 +142,27 @@ def combine_csv_files(path='.'):
     for filename in csvs_file_list:
         df = pd.concat([df, pd.read_csv(os.path.join(path, filename))])
     return(df)
-    
+
+# Prints iterable more neatly.
+def neat_list(thelist, width=4):
+    if type(thelist) == dict:
+        thelist = [(k,v) for k,v in thelist.items()]
+    for i in range(0,len(thelist)):
+        if i%width > 0:
+            print('"{}" '.format(thelist[i]), end='')
+        elif i%width == 0:
+            print('"{}" '.format(thelist[i]))
+
+# Test if an item is in a list.
+# Inspired by Stata's inlist command.
+def inlist(list_to_test, item=''):
+    isinlist = False
+    for i in list_to_test:
+        if i == item:
+            isinlist = True
+    return(isinlist)            
     
 # Function for testing purposes.
-
 def hello_world():
     print('Hello world')
 
