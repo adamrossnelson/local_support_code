@@ -69,7 +69,7 @@ def get_strl(df, max_len=244):
     obj_cols = list(df.select_dtypes(include=['object']).columns)
     strl_list = []
     for obj_col in tqdm(obj_cols, desc='Get Strl List'):
-        if df[obj_col].map(lambda x: len(x)).max() > max_len:
+        if df[obj_col].fillna('').map(lambda x: len(x)).max() > max_len:
             strl_list.append(obj_col)
     return(strl_list)
 
