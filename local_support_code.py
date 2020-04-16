@@ -153,6 +153,31 @@ def neat_list(thelist, width=4):
         elif i%width == 0:
             print('"{}" '.format(thelist[i]))
 
+# Prints iterable more neatly in dataframe format.
+def neat_list_df(ilist, max_cols=4, sort=False, reverse=False):
+    # Sort of sort specified True
+    if sort == True:
+        ilist = sorted(ilist, reverse=reverse, key=str.lower)
+    
+    # Make the list evenly divisble by number of columns
+    ilist = list(ilist) + [''] * int(len(ilist)%max_cols)
+    
+    # Calculate the number of rows
+    nrows = int(len(ilist)/max_cols)
+    
+    # Declare dictionary for the data & starting row
+    neat_data = {}
+    startrow = 0
+    
+    for i in range(0,max_cols):
+        # Iteratively add each row
+        neat_data[i] = ilist[startrow:startrow+nrows]
+        # Increment the starting row.
+        startrow = startrow + nrows
+        
+    # Return a dataframe
+    return(pd.DataFrame(neat_data))
+
 # Test if an item is in a list.
 # Inspired by Stata's inlist command.
 def inlist(list_to_test, item=''):
