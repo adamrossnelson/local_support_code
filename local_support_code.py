@@ -185,7 +185,94 @@ def inlist(list_to_test, item=''):
     for i in list_to_test:
         if i == item:
             isinlist = True
-    return(isinlist)            
+    return(isinlist)
+
+def SigStrObs(df, rounder=4, prounder=3, sigval=.05, frame=True, lower=False):
+    '''
+    Returns a correlation matrix with p-values.
+    
+    Arguments:
+        df - A dataframe.
+        
+        rounder - Default = 4. Number of decimal places to display coefficients.
+        
+        prounder - Default = 3. Number of decimanl places to display p-values.
+        
+        sigval - Default = .05. Statistical significance threshold.
+                                Stars placed by p-values below threshold.
+                                
+        frame - Default = True. When False the return will be a dictionary.
+        
+        lower - Default = False. When true will reverse display of coefficients.
+    '''
+    from scipy.stats import pearsonr
+    if rounder > 6:
+        print('NOTE: Some results reported to a maximum of six decimal places.')
+    df.dropna(inplace=True)    
+    corrs = df.corr()
+    pvals = pd.DataFrame([[pearsonr(df[c], df[y])[1] for y in df.columns] for c in df.columns],
+                         columns=df.columns, index=df.columns)
+    
+    if not lower:
+        itr1 = 0
+        itr2 = 1
+    
+    if lower:
+        itr1 = 0
+        itr2 = len(corrs.columns)
+    
+    result = {}
+    for c in corrs.columns:
+        result[c] = []
+        for r in corrs.columns[itr1:itr2]:
+
+            # Write the correlation coefficient.
+            result[c].append(round(corrs[c][r], rounder))
+            # Adjust display of coefficient if on the diagonal
+            if result[c][-1] == 1:
+                result[c][-1] = '1.' + '0' * rounder
+
+            # Write the p-value for the correlation.
+            result[c].append(round(pvals[c][r], prounder))
+            result[c][-1] = str(result[c][-1])
+            if len(result[c][-1]) < 2 + prounder:
+                result[c][-1] = result[c][-1] + '0' * (2 + prounder - len(result[c][-1]))
+            if result[c][-1].find('e') > -1:
+                result[c][-1] = '0.0000' + result[c][-1][0]
+            # Add parens to the p-value output
+            result[c][-1] = '({})'.format(result[c][-1])
+            
+            # Add star for significance
+            if float(result[c][-1][4:6]) / 1000 < sigval:
+                result[c][-1] = result[c][-1] + '*'
+
+            # TODO: Implement pairwise counts of cases.
+            # Add observation counts TODO: Needs testing.
+            # result[c].append(str(len(df[[c,r]].dropna())))
+
+            # Remove p-values & obs for the diagonal
+            if df[[c]].columns == df[[r]].columns:
+                # Remove the p-value
+                result[c][-1] = ''
+                # Not yet implemented. See related TODO above.
+                # Remove the observation count
+                # result[c][-2] = ''
+        
+        if not lower:
+            result[c] = result[c] + [''] * 2 * (len(corrs.columns) - itr2)
+            itr2 += 1
+            
+        if lower:
+            result[c] = [''] * 2 * itr1 + result[c]
+            itr1 += 1
+    
+    outer = np.array(corrs.columns).repeat(2).tolist()
+    inner = ['coef','pval'] * len(corrs.columns)
+    if frame:
+        return(pd.DataFrame(result, index=[outer, inner]))
+    else:
+        return(result)
+
     
 # Function for testing purposes.
 def hello_world():
