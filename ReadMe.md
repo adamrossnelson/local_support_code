@@ -11,7 +11,7 @@ Windows:
 
 See [Set the system path for Python Jupyter notebooks](https://www.peterbakke.com/data-analysis/set-system-path-python-jupyter-notebooks/)
 
-Mac or Linus:
+Mac or Linux:
 
 Clone this repository to local environment. Add the repository location to Jupyter's path. Discussion of Jupyter path 
 [here](https://stackoverflow.com/questions/34976803/sys-path-different-in-jupyter-and-python-how-to-import-own-modules-in-jupyter).
@@ -27,11 +27,19 @@ $ ipython locate
 $ cd /Users/username/.ipython
 $ nano profile_default/ipython_config.py
 ```
-Added to `ipython_config.py`, the following lines allow you to add your module path to `sys.path`.
+Add to `ipython_config.py`, the following lines allow you to add your module path to `sys.path`.
 ```
 c.InteractiveShellApp.exec_lines = [
     'import sys; sys.path.append("/path/to/your/module")'
 ]
+```
+
+## Alternate Option
+
+Please local_support_code.py in an existing path location (example for anaconda users):
+
+```
+/Users/username/anaconda3/lib/python3.8/site-packages
 ```
 
 ## Available Functions
