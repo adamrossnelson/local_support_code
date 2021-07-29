@@ -272,7 +272,14 @@ def SigStrObs(df, rounder=4, prounder=3, sigval=.05, frame=True, lower=False):
         return(pd.DataFrame(result, index=[outer, inner]))
     else:
         return(result)
-
+    
+# Helps display head and tail of a data frame horizontally.
+# This can save line and display space.
+def lrpd(df, n=5, sep='< head | tail >', sepcol=' '):
+    return(
+    pd.concat([df.head(n), 
+               pd.DataFrame([sep] * n, columns=[sepcol]),
+               df.tail(n).reset_index().drop('index', axis=1)], axis=1))
     
 # Function for testing purposes.
 def hello_world():
